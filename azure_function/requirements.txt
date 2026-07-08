@@ -3,3 +3,7 @@
 # azure-monitor-opentelemetry
 
 azure-functions
+requests
+pandas
+pyarrow
+azure-storage-blob
