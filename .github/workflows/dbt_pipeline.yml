@@ -23,7 +23,7 @@ jobs:
 
       - name: Executer dbt
         env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{secret.AZURE_STORAGE_CONNECTION_STRING}}
+          AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
         run: |
           cd f1_transform
           dbt run
