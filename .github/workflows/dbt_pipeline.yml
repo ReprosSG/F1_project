@@ -27,4 +27,4 @@ jobs:
           SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
         run: |
           cd f1_transform
-          dbt run
+          dbt run --profiles-dir .
