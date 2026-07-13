@@ -7,8 +7,6 @@ f1_transform:
       extensions:
         - httpfs
         - azure
-      settings:
-        ca_cert_file: '/etc/ssl/certs/ca-certificates.crt'
       secrets:
         - type: azure
           connection_string: "{{ env_var('AZURE_STORAGE_CONNECTION_STRING') }}"
