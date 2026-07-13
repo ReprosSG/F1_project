@@ -1,0 +1,29 @@
+name : Transform F1 Data (dbt)
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+      
+jobs:
+  run-dbt-models:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: '3.10'
+      
+      - name: Installer les dependances
+        run: pip install -r requirements.txt
+
+      - name: Executer dbt
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{secret.AZURE_STORAGE_CONNECTION_STRING}}
+        run: |
+          cd f1_transform
+          dbt run
