@@ -24,7 +24,9 @@ jobs:
       - name: Executer dbt
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+          CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
           SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+          SSL_CERT_DIR: /etc/ssl/certs
         run: |
           cd f1_transform
           dbt run --profiles-dir .
