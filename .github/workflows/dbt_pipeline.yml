@@ -7,7 +7,7 @@ on:
       
 jobs:
   run-dbt-models:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
@@ -26,6 +26,5 @@ jobs:
           AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
           SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
         run: |
-          sudo update-ca-certificates
           cd f1_transform
           dbt run --profiles-dir .
