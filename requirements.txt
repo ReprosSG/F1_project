@@ -1,3 +1,5 @@
-requests
-pandas
-dbt-duckdb
+pandas==3.0.3
+requests==2.34.2
+dbt-core==1.11.12
+dbt-duckdb==1.10.1
+duckdb==1.5.4
