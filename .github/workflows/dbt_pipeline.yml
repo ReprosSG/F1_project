@@ -7,7 +7,7 @@ on:
       
 jobs:
   run-dbt-models:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -28,5 +28,7 @@ jobs:
           SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
           SSL_CERT_DIR: /etc/ssl/certs
         run: |
+          export SSL_CERT_FILE=$(python -c "import certifi; print(certifi.where())")
+          export CURL_CA_BUNDLE=$(python -c "import certifi; print(certifi.where())")
           cd f1_transform
           dbt run --profiles-dir .
