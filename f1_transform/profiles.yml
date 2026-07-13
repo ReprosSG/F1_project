@@ -1,0 +1,12 @@
+f1_transform:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: f1_database.duckdb
+      extensions:
+        - httpfs
+        - azure
+      secrets:
+        - type: azure
+          connection_string: "{{ env_var('AZURE_STORAGE_CONNECTION_STRING') }}"
