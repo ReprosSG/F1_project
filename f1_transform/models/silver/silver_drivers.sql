@@ -9,9 +9,9 @@ WITH source_data AS (
 )
 
 SELECT
-    CAST(driver_number AS INTEGER) AS numero_pilote,
+    TRY_CAST(driver_number AS INTEGER) AS numero_pilote,
     CAST(full_name AS VARCHAR) AS nom_complet,
-    CAST(country_code AS INTEGER) AS code_pays,
-    UPPER(last_name) AS nom_pilote,
+    TRY_CAST(country_code AS INTEGER) AS code_pays,
+    UPPER(last_name) AS nom_pilote
 FROM source_data
 WHERE driver_number IS NOT NULL

@@ -5,7 +5,19 @@ models:
     description: "Table nettoyee contenant les informations des pilotes de F1."
     columns:
       - name: numero_pilote
-        description: "Cle primaire unique du pilote."
-        tests:
+        description: "Numero unique du pilote."
+        data_tests:
           - unique
+          - not_null
+      - name: nom_complet
+        description: "Nom complet du pilote."
+        data_tests:
+          - not_null
+      - name: code_pays
+        description: "Code du pays du pilote."
+        data_tests:
+          - not_null
+      - name: nom_pilote
+        description: "Nom de famille du pilote en majuscule."
+        data_tests:
           - not_null
