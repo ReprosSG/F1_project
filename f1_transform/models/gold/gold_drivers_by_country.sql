@@ -8,8 +8,10 @@ WITH silver_data AS (
     FROM 'azure://silver/drivers/silver_drivers.parquet'
 )
 
-SELECT code_pays, COUNT(numero_pilote) AS nombre_de_pilotes
+SELECT 
+    nationalite, 
+    COUNT(id_pilote) AS nombre_de_pilotes
 FROM silver_data
-WHERE code_pays IS NOT NULL
-GROUP BY code_pays
+WHERE nationalite IS NOT NULL
+GROUP BY nationalite
 ORDER BY nombre_de_pilotes DESC
