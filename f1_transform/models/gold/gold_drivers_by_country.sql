@@ -1,3 +1,5 @@
+-- depends_on: {{ ref('silver_drivers') }}
+
 {{config(
     materialized='external',
     location='azure://gold/drivers/gold_drivers_by_country.parquet'
