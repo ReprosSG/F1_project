@@ -1,12 +1,30 @@
 f1_transform:
-  target: dev
+  target: "{{ env_var('DBT_TARGET', 'local') }}"
+  
   outputs:
-    dev:
+    local:
       type: duckdb
       path: f1_database.duckdb
+
       extensions:
         - httpfs
         - azure
+
+      secrets:
+        - type: azure
+          connection_string: "{{ env_var('AZURE_STORAGE_CONNECTION_STRING') }}"
+      
+    ci:
+      type: duckdb
+      path: f1_database.duckdb
+
+      extensions:
+        - httpfs
+        - azure
+
+      settings:
+        azure_transport_option_type: curl
+
       secrets:
         - type: azure
           connection_string: "{{ env_var('AZURE_STORAGE_CONNECTION_STRING') }}"

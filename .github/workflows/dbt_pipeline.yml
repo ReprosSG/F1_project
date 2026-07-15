@@ -10,7 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+        DBT_TARGET: ci
+        AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+        SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+        CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+        CURL_CA_INFO: /etc/ssl/certs/ca-certificates.crt
 
     steps:
       - name: Checkout code
@@ -21,16 +25,30 @@ jobs:
         with: 
           python-version: '3.12'
       
+      - name: Installer les certificats SSL
+        run: |
+          sudo apt-get update
+          sudo apt-get install --reinstall -y ca-certificates
+          sudo update-ca-certificates
+
+          sudo mkdir -p /etc/pki/tls/certs
+          sudo ln -sf /etc/ssl/certs/ca-certificates.crt \
+          /etc/pki/tls/certs/ca-bundle.crt
+      
       - name: Installer les dependances
         run: pip install -r requirements.txt
 
+      - name: Verifier la configuration dbt
+        working-directory: ./f1_transform
+        run: dbt debug --profiles-dir . --target ci
+      
       - name: Construire les tables
         run: |
           cd f1_transform
-          dbt run --profiles-dir .
+          dbt run --profiles-dir . --target ci
       
       - name: Executer tests
         run: |
           cd f1_transform
-          dbt test --profiles-dir .
+          dbt test --profiles-dir . --target ci
           
