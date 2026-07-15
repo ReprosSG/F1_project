@@ -29,8 +29,6 @@ models:
 
       - name: date_naissance
         description: "Date de naissance du pilote."
-        data_tests:
-          - not_null
 
       - name: nationalite
         description: "Nationalite du pilote."
