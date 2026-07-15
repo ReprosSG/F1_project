@@ -21,9 +21,10 @@ jobs:
       - name: Installer les dependances
         run: pip install -r requirements.txt
 
-      - name: Executer dbt
+      - name: Executer dbt run et dbt test
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
         run: |
           cd f1_transform
           dbt run --profiles-dir .
+          dbt test --profiles-dir .

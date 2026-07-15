@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: silver_drivers
+    description: "Table nettoyee contenant les informations des pilotes de F1."
+    columns:
+      - name: numero_pilote
+        description: "Cle primaire unique du pilote."
+        tests:
+          - unique
+          - not_null
