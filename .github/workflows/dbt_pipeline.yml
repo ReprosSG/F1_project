@@ -42,13 +42,9 @@ jobs:
         working-directory: ./f1_transform
         run: dbt debug --profiles-dir . --target ci
       
-      - name: Construire les tables
+      - name: Construire et tester les tables
         run: |
           cd f1_transform
-          dbt run --profiles-dir . --target ci
-      
-      - name: Executer tests
-        run: |
-          cd f1_transform
-          dbt test --profiles-dir . --target ci
+          dbt build --profiles-dir . --target ci
+
           
