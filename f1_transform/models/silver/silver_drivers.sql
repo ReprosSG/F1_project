@@ -15,6 +15,6 @@ SELECT
     UPPER(CAST(familyName AS VARCHAR)) AS nom_pilote,
     CAST(code AS VARCHAR) AS acronyme,
     TRY_CAST(dateOfBirth AS DATE) AS date_naissance,
-    COALESCE(CAST(nationality AS VARCHAR), 'Non renseignee') AS nationalite
+    CAST(nationality AS VARCHAR) AS nationalite
 FROM source_data
-WHERE driverID IS NOT NULL
+WHERE driverID IS NOT NULL AND permanentNumber IS NOT NULL
