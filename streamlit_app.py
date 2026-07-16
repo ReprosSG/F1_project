@@ -1,10 +1,10 @@
 import os
-
 import pandas as pd
 import streamlit as st
 
 
-# Config de la page
+# CONFIGURATION ET STYLE
+
 
 st.set_page_config(
     page_title="Dashboard F1",
@@ -12,9 +12,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-
-# STYLE PERSONNALISE
 
 st.markdown(
     """
@@ -107,7 +104,8 @@ st.markdown(
 )
 
 
-# CHARGEMENT DES DONNEES
+
+# CHARGEMENT DES DONNÉES
 
 
 @st.cache_data(
@@ -122,8 +120,7 @@ def load_data():
 
     if not connection_string:
         raise ValueError(
-            "La variable AZURE_STORAGE_CONNECTION_STRING "
-            "n'est pas configurée."
+            "La variable AZURE_STORAGE_CONNECTION_STRING n'est pas configurée."
         )
 
     dataframe = pd.read_parquet(
@@ -136,43 +133,8 @@ def load_data():
     return dataframe
 
 
-def find_value_column(dataframe):
-    """
-    Cherche la colonne numérique représentant le nombre de pilotes.
-    """
 
-    priority_columns = [
-        "nombre_pilotes",
-        "nb_pilotes",
-        "nombre_de_pilotes",
-        "driver_count",
-        "count",
-        "total",
-    ]
-
-    for column in priority_columns:
-        if column in dataframe.columns:
-            return column
-
-    numeric_columns = dataframe.select_dtypes(
-        include="number"
-    ).columns.tolist()
-
-    if numeric_columns:
-        return numeric_columns[0]
-
-    return None
-
-
-def format_column_name(column):
-    """
-    Transforme 'nombre_pilotes' en 'Nombre Pilotes'.
-    """
-    return column.replace("_", " ").strip().title()
-
-
-
-# EN-TETE
+# EN-TÊTE
 
 
 st.markdown(
@@ -191,53 +153,24 @@ st.markdown(
 
 
 
-# CHARGEMENT ET AFFICHAGE
+# AFFICHAGE PRINCIPAL
 
 
 try:
     df_data = load_data()
 
     if df_data.empty:
-        st.warning(
-            "Le fichier a bien été chargé, mais il ne contient "
-            "aucune donnée."
-        )
+        st.warning("Le fichier a bien été chargé, mais il ne contient aucune donnée.")
         st.stop()
 
-    if "nationalite" not in df_data.columns:
-        st.error(
-            "La colonne `nationalite` est absente du fichier Parquet."
-        )
+    if "nationalite" not in df_data.columns or "nombre_de_pilotes" not in df_data.columns:
+        st.error("Les colonnes nécessaires sont absentes du fichier Parquet.")
         st.write("Colonnes disponibles :", list(df_data.columns))
         st.stop()
 
-    value_column = find_value_column(df_data)
-
-    if value_column is None:
-        st.error(
-            "Aucune colonne numérique n'a été trouvée pour construire "
-            "le graphique."
-        )
-        st.stop()
-
-    # Nettoyage léger
-    df_data = df_data.copy()
-
-    df_data["nationalite"] = (
-        df_data["nationalite"]
-        .fillna("Nationalité inconnue")
-        .astype(str)
-        .str.strip()
-    )
-
-    df_data[value_column] = pd.to_numeric(
-        df_data[value_column],
-        errors="coerce",
-    ).fillna(0)
-
-    # ========================================================
+    
     # BARRE LATÉRALE
-    # ========================================================
+    
 
     with st.sidebar:
         st.header("🏁 Filtres")
@@ -269,18 +202,15 @@ try:
 
         st.divider()
 
-        if st.button(
-            "🔄 Actualiser les données",
-            type="primary",
-        ):
+        if st.button("🔄 Actualiser les données", type="primary"):
             load_data.clear()
             st.rerun()
 
-        st.caption(
-            "Source : Azure Data Lake — couche Gold"
-        )
+        st.caption("Source : Azure Data Lake — couche Gold")
 
-    # FILTRAGE
+    
+    # FILTRAGE ET TRI
+    
 
     if selected_nationalities:
         df_filtered = df_data[
@@ -289,22 +219,23 @@ try:
     else:
         df_filtered = df_data.iloc[0:0].copy()
 
+    # Simplification : On trie simplement la table Gold qui est déjà agrégée
     df_chart = (
         df_filtered
-        .groupby("nationalite", as_index=False)[value_column]
-        .sum()
-        .sort_values(value_column, ascending=False)
+        .sort_values("nombre_de_pilotes", ascending=False)
         .head(top_n)
     )
 
+    
     # INDICATEURS
+    
 
-    total_drivers = int(df_filtered[value_column].sum())
+    total_drivers = int(df_filtered["nombre_de_pilotes"].sum())
     total_nationalities = df_filtered["nationalite"].nunique()
 
     if not df_chart.empty:
         leading_country = df_chart.iloc[0]["nationalite"]
-        leading_value = int(df_chart.iloc[0][value_column])
+        leading_value = int(df_chart.iloc[0]["nombre_de_pilotes"])
     else:
         leading_country = "Aucune"
         leading_value = 0
@@ -316,19 +247,16 @@ try:
             label="Nombre total de pilotes",
             value=f"{total_drivers:,}".replace(",", " "),
         )
-
     with metric2:
         st.metric(
             label="Nationalités représentées",
             value=total_nationalities,
         )
-
     with metric3:
         st.metric(
             label="Nationalité dominante",
             value=leading_country,
         )
-
     with metric4:
         st.metric(
             label="Pilotes de cette nationalité",
@@ -337,14 +265,11 @@ try:
 
     st.write("")
 
+    
+    # GRAPHIQUE ET CLASSEMENT
+    
 
-    # GRAPHIQUE ET RESUME
-
-
-    chart_col, ranking_col = st.columns(
-        [2, 1],
-        gap="large",
-    )
+    chart_col, ranking_col = st.columns([2, 1], gap="large")
 
     with chart_col:
         with st.container(border=True):
@@ -356,17 +281,15 @@ try:
             )
 
             if df_chart.empty:
-                st.info(
-                    "Aucune donnée ne correspond aux filtres sélectionnés."
-                )
+                st.info("Aucune donnée ne correspond aux filtres sélectionnés.")
             else:
                 st.bar_chart(
                     data=df_chart,
                     x="nationalite",
-                    y=value_column,
+                    y="nombre_de_pilotes",
                     color="#E10600",
                     horizontal=True,
-                    sort=f"-{value_column}",
+                    sort="-nombre_de_pilotes",
                     height=480,
                 )
 
@@ -393,16 +316,16 @@ try:
                     st.markdown(
                         f"""
                         **{medal} {position}. {row["nationalite"]}**  
-                        {int(row[value_column])} pilote(s)
+                        {int(row["nombre_de_pilotes"])} pilote(s)
                         """
                     )
 
                     if position < min(5, len(ranking)):
                         st.divider()
 
-
-    # TABLEAU
-
+    
+    # TABLEAU DE DONNÉES
+    
 
     st.write("")
 
@@ -414,14 +337,10 @@ try:
 
         with table_title_col:
             st.subheader("📋 Données détaillées")
-            st.caption(
-                f"{len(df_filtered)} ligne(s) affichée(s)."
-            )
+            st.caption(f"{len(df_filtered)} ligne(s) affichée(s).")
 
         with download_col:
-            csv_data = df_filtered.to_csv(
-                index=False
-            ).encode("utf-8-sig")
+            csv_data = df_filtered.to_csv(index=False).encode("utf-8-sig")
 
             st.download_button(
                 label="⬇️ Télécharger CSV",
@@ -436,27 +355,24 @@ try:
                 help="Nationalité des pilotes",
                 width="large",
             ),
-            value_column: st.column_config.NumberColumn(
-                format_column_name(value_column),
-                help="Nombre de pilotes",
+            "nombre_de_pilotes": st.column_config.NumberColumn(
+                "Nombre de pilotes",
+                help="Nombre de pilotes pour ce pays",
                 format="%d",
             ),
         }
 
         st.dataframe(
-            df_filtered.sort_values(
-                value_column,
-                ascending=False,
-            ),
+            df_filtered.sort_values("nombre_de_pilotes", ascending=False),
             use_container_width=True,
             hide_index=True,
             column_config=column_configuration,
             height=450,
         )
 
-
+    
     # INFORMATIONS TECHNIQUES
-
+    
 
     with st.expander("ℹ️ Informations sur les données"):
         info_col1, info_col2, info_col3 = st.columns(3)
@@ -471,7 +387,7 @@ try:
 
         with info_col3:
             st.write("**Colonne analysée**")
-            st.code(value_column)
+            st.code("nombre_de_pilotes")
 
         st.write("**Colonnes disponibles :**")
         st.write(", ".join(df_data.columns))
