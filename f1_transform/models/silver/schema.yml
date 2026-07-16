@@ -12,7 +12,9 @@ models:
           - not_null
 
       - name: numero_pilote
-        description: "Numero permanent du pilote, pouvant etre absent."
+        description: "Numero permanent du pilote"
+        data_tests:
+          - not_null
 
       - name: prenom
         description: "Prenom du pilote."
