@@ -1,5 +1,3 @@
--- depends_on: {{ ref('silver_drivers') }}
-
 {{config(
     materialized='external',
     location='azure://gold/drivers/gold_drivers_by_country.parquet'
@@ -7,7 +5,7 @@
 
 WITH silver_data AS (
     SELECT *
-    FROM 'azure://silver/drivers/silver_drivers.parquet'
+    FROM {{ ref('silver_drivers') }}
 )
 
 SELECT 
