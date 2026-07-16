@@ -19,7 +19,7 @@ st.write("Bienvenue ! Les donnees de la couche gold sont affichées ici !")
 
 def load_data():
     chaine_connexion = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
-    df = pd.read_parquet("azure://gold/drivers/gold_drivers_by_country.parquet",
+    df = pd.read_parquet("az://gold/drivers/gold_drivers_by_country.parquet",
                          storage_options={"connection_string": chaine_connexion})
     return df
 
