@@ -5,7 +5,7 @@
 
 WITH source_data AS (
     SELECT *
-    FROM 'azure://bronze/drivers/drivers_latest.parquet'
+    FROM {{ source('bronze_sources', 'drivers_latest') }}
 )
 
 SELECT

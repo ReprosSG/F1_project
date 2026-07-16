@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: bronze_sources
+    tables:
+      - name: drivers_latest
+        config:
+          external_location: "azure://bronze/drivers/drivers_latest.parquet"
