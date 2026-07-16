@@ -105,7 +105,7 @@ st.markdown(
 
 
 
-# CHARGEMENT DES DONNÉES
+# CHARGEMENT DES DONNEES
 
 
 @st.cache_data(
@@ -134,7 +134,7 @@ def load_data():
 
 
 
-# EN-TÊTE
+# EN-TETE
 
 
 st.markdown(
@@ -169,7 +169,7 @@ try:
         st.stop()
 
     
-    # BARRE LATÉRALE
+    # BARRE LATERALE
     
 
     with st.sidebar:
