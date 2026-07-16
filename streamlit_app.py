@@ -11,7 +11,7 @@ st.set_page_config(
 #titre principal
 st.title("Tableau de bord de Formule 1")
 st.markdown("---")
-st.write("Bienvenue ! Les donnees de la couche gold sont affichées ici !")
+st.write("Bienvenue ! Les données de la couche gold sont affichées ici !")
 
 #chargement des donnéees
 
