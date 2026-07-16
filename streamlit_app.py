@@ -324,7 +324,7 @@ try:
                         st.divider()
 
     
-    # TABLEAU DE DONNÉES
+    # TABLEAU DE DONNEES
     
 
     st.write("")
