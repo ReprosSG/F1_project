@@ -2,16 +2,16 @@ version: 2
 
 models:
   - name: gold_drivers_by_country
-    description: "Table agrégée comptant le nombre de pilotes pour chaque nationalité."
+    description: "Table agregee comptant le nombre de pilotes pour chaque nationalite."
 
     columns:
       - name: nationalite
-        description: "La nationalité (qui sert de clé de regroupement)."
+        description: "La nationalite (qui sert de cle de regroupement)."
         data_tests:
           - unique
           - not_null
 
       - name: nombre_de_pilotes
-        description: "Le nombre total de pilotes pour cette nationalité."
+        description: "Le nombre total de pilotes pour cette nationalite."
         data_tests:
           - not_null
